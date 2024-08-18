@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { usePocketBase } from "../hooks/usePocketBase";
+import { usePocketBase } from "../../hooks/usePocketBase";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const SignUp: React.FC = () => {
   const { pb, currentUser } = usePocketBase();
@@ -8,6 +9,8 @@ const SignUp: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,29 +22,37 @@ const SignUp: React.FC = () => {
     }
 
     try {
+      setIsLoading(true);
+      // Create a new user
       await pb.collection("users").create({
         username,
         email,
         password,
         passwordConfirm: confirmPassword,
       });
+
+      // Automatically sign in the user after successful registration
       await pb.collection("users").authWithPassword(email, password);
+
+      navigate("/"); // Redirect to home page after successful registration and login
     } catch (err) {
-      setError(
-        "Failed to create account. Username or email might be already in use."
-      );
+      console.error("Registration error:", err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to create account. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   if (currentUser) {
-    return (
-      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-        <p className="text-lg text-gray-800">
-          You are already signed in as{" "}
-          <span className="font-semibold">{currentUser.email}</span>
-        </p>
-      </div>
-    );
+    return <Navigate to="/" replace />; // Redirect to home page if already signed in
   }
 
   return (
@@ -117,9 +128,10 @@ const SignUp: React.FC = () => {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           type="submit"
-          className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-300"
+          disabled={isLoading}
+          className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-300 disabled:opacity-50"
         >
-          Sign Up
+          {isLoading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
     </div>

@@ -1,32 +1,40 @@
 import React, { useState } from "react";
-import { usePocketBase } from "../hooks/usePocketBase";
+import { usePocketBase } from "../../hooks/usePocketBase";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const SignIn: React.FC = () => {
   const { pb, currentUser } = usePocketBase();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
+      setIsLoading(true);
+      // Use the correct method to authenticate with email and password
       await pb.collection("users").authWithPassword(email, password);
+      navigate("/home");
     } catch (err) {
-      setError("Invalid email or password");
+      console.error("Login error:", err);
+      setError(
+        err instanceof Error ? err.message : "Invalid email or password"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   if (currentUser) {
-    return (
-      <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-        <p className="text-lg text-gray-800">
-          You are already signed in as{" "}
-          <span className="font-semibold">{currentUser.email}</span>
-        </p>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return (
@@ -70,9 +78,10 @@ const SignIn: React.FC = () => {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
+          disabled={isLoading}
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 disabled:opacity-50"
         >
-          Sign In
+          {isLoading ? "Signing In..." : "Sign In"}
         </button>
       </form>
     </div>
