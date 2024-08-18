@@ -162,7 +162,6 @@ const Dashboard: React.FC = () => {
     return <div>Please log in to view the dashboard.</div>;
   }
 
-  console.log(tweets);
   return (
     <div className="container mx-auto mt-8 p-4 max-w-2xl">
       <div className="mb-8 bg-white p-6 rounded-lg shadow-md border border-gray-200">

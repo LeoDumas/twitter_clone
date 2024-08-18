@@ -42,14 +42,15 @@ const Tweet: React.FC<TweetProps> = ({ text, created, user }) => {
     created.toISOString()
   );
 
-  console.log(formattedDate);
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 max-w-2xl border border-gray-200">
       <div className="flex-shrink-0">
         <img
           src={
             user?.avatar
-              ? `REDACTEDapi/files/_pb_users_auth_/${user.id}/${user.avatar}`
+              ? `${
+                  import.meta.env.VITE_POCKETBASE_URL
+                }api/files/_pb_users_auth_/${user.id}/${user.avatar}`
               : `https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${user.username}`
           }
           alt={`${user.username}'s avatar`}

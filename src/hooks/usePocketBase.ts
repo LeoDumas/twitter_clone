@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PocketBase, { AuthModel } from 'pocketbase';
 
-const pb = new PocketBase("REDACTED");
+const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
 
 export function usePocketBase() {
   const [currentUser, setCurrentUser] = useState<AuthModel | null>(pb.authStore.model);

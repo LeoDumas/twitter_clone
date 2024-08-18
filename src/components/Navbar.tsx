@@ -33,7 +33,11 @@ const Navbar: React.FC = () => {
               <img
                 src={
                   currentUser?.avatar
-                    ? `REDACTEDapi/files/_pb_users_auth_/${currentUser.id}/${currentUser.avatar}`
+                    ? `${
+                        import.meta.env.VITE_POCKETBASE_URL
+                      }api/files/_pb_users_auth_/${currentUser.id}/${
+                        currentUser.avatar
+                      }`
                     : `https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${currentUser.username}`
                 }
                 alt={`${currentUser.username}'s avatar`}
@@ -102,7 +106,11 @@ const SettingsBox = React.forwardRef<HTMLDivElement, SettingsBoxProps>(
           <img
             src={
               currentUser?.avatar
-                ? `REDACTEDapi/files/_pb_users_auth_/${currentUser.id}/${currentUser.avatar}`
+                ? `${
+                    import.meta.env.VITE_POCKETBASE_URL
+                  }api/files/_pb_users_auth_/${currentUser.id}/${
+                    currentUser.avatar
+                  }`
                 : `https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${currentUser?.username}`
             }
             alt={`${currentUser?.username}'s avatar`}
