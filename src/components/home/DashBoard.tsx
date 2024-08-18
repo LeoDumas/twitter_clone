@@ -25,6 +25,11 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const fetchTweetsRef = useRef<() => void>(() => {});
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+  const toggleTooltip = () => {
+    setIsTooltipVisible(!isTooltipVisible);
+  };
 
   // Setup skeleton
   const TweetSkeleton = () => (
@@ -214,12 +219,33 @@ const Dashboard: React.FC = () => {
           </div>
         </form>
       </div>
-      <button
-        onClick={() => fetchTweetsRef.current()}
-        className="mb-4 bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
-      >
-        Refresh Tweets
-      </button>
+      <div className="flex items-center mb-4 gap-x-2">
+        <button
+          onClick={() => fetchTweetsRef.current()}
+          className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+        >
+          Refresh Tweets
+        </button>
+        <div className="relative ml-2">
+          <span
+            className="cursor-help text-black border-2 border-black px-2 rounded-full text-lg"
+            onClick={toggleTooltip}
+            onMouseEnter={() => setIsTooltipVisible(true)}
+            onMouseLeave={() => setIsTooltipVisible(false)}
+          >
+            ?
+          </span>
+          <div
+            className={`absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg transition-opacity duration-300 w-64 text-center ${
+              isTooltipVisible ? "opacity-100 visible" : "opacity-0 invisible"
+            }`}
+          >
+            Automatic refresh is not enabled, which is great because, like on
+            Twitter, it's frustrating to lose the post you're reading due to an
+            unexpected refresh. So this button allows you to refresh the feed.
+          </div>
+        </div>
+      </div>
       <div>
         <h2 className="text-2xl font-bold mb-4">Recent Tweets</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}

@@ -44,7 +44,7 @@ const Tweet: React.FC<TweetProps> = ({ text, created, user }) => {
 
   console.log(formattedDate);
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg flex items-start space-x-4 max-w-2xl border border-gray-200">
+    <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4 max-w-2xl border border-gray-200">
       <div className="flex-shrink-0">
         <img
           src={
@@ -56,12 +56,12 @@ const Tweet: React.FC<TweetProps> = ({ text, created, user }) => {
           className="w-12 h-12 rounded-full"
         />
       </div>
-      <div className="flex-grow">
-        <div className="flex items-center space-x-1">
+      <div className="flex-grow w-full sm:w-auto">
+        <div className="flex flex-wrap items-center space-x-1">
           <p className="font-semibold text-gray-900">{user.username}</p>
           <span className="text-gray-500">@{user.username}</span>
-          <span className="text-gray-500">·</span>
-          <span className="text-gray-500">{`Le ${formattedDate} à ${formattedTime}`}</span>
+          <span className="text-gray-500 hidden sm:inline">·</span>
+          <span className="text-gray-500 text-sm w-full sm:w-auto mt-1 sm:mt-0">{`Le ${formattedDate} à ${formattedTime}`}</span>
         </div>
         <p className="text-gray-800 mt-2 text-sm">{text}</p>
       </div>
